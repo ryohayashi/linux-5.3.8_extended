@@ -38,7 +38,7 @@
 #define VIRTIO_BALLOON_FREE_PAGE_SIZE \
 	(1 << (VIRTIO_BALLOON_FREE_PAGE_ORDER + PAGE_SHIFT))
 //Mycode
-#define MAX_NODES 8
+#define MAX_NODES 2
 
 #ifdef CONFIG_BALLOON_COMPACTION
 static struct vfsmount *balloon_mnt;
@@ -269,7 +269,7 @@ static unsigned leak_balloon(struct virtio_balloon *vb, size_t num, int node) //
 	struct page *page;
 	struct balloon_dev_info *vb_dev_info = &vb->vb_dev_info[node];
 	LIST_HEAD(pages);
-	printk(KERN_INFO "MY DEBUG. leak_balloon node:%u\n",node);
+	//printk(KERN_INFO "MY DEBUG. leak_balloon node:%u\n",node);
 
 	/* We can only do one array worth at a time. */
 	num = min(num, ARRAY_SIZE(vb->pfns));
@@ -394,7 +394,7 @@ static inline u32 read_node_id(struct virtio_balloon *vb)
 	u32 node_id = 0;
 	virtio_cread(vb->vdev, struct virtio_balloon_config_new, node_id, 
 			&node_id);
-	printk(KERN_INFO "MY DEBUG. cread node_id:%u\n",node_id);
+	//printk(KERN_INFO "MY DEBUG. cread node_id:%u\n",node_id);
 	if (!virtio_has_feature(vb->vdev, VIRTIO_F_VERSION_1))
 		node_id = le32_to_cpu((__force __le32)node_id);
 	if (node_id < 0 || node_id >= 8) node_id = 0;
@@ -760,7 +760,6 @@ static int virtballoon_migratepage(struct balloon_dev_info *vb_dev_info,
 			struct virtio_balloon, vb_dev_info[page_to_nid(page)]);
 	//Mycode: pick vb_dev_info of the node that newpage belongs. node id is retrieved via page_to_nid 
 	struct balloon_dev_info *vb_dev_info_new = &vb->vb_dev_info[page_to_nid(newpage)];
-	//printk(KERN_INFO "MY_DEBUG. vb:%x, vb_dev_info[%d]:%x, vb_dev_info_new[%d]:%x\n", vb, page_to_nid(page),vb_dev_info,page_to_nid(newpage),vb_dev_info_new);
 	/*
 	 * In order to avoid lock contention while migrating pages concurrently
 	 * to leak_balloon() or fill_balloon() we just give up the balloon_lock
@@ -921,7 +920,7 @@ static int virtballoon_probe(struct virtio_device *vdev)
 	//Mycode
 	for(i = 0; i < MAX_NODES; i++){
 		balloon_devinfo_init(&vb->vb_dev_info[i]);
-		printk("MY DEBUG. Node:%d, Address:%x\n",i,&vb->vb_dev_info[i]);
+		//printk("MY DEBUG. Node:%d, Address:%x\n",i,&vb->vb_dev_info[i]);
 	}
 	err = init_vqs(vb);
 	if (err)
