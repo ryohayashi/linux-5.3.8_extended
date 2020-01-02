@@ -235,7 +235,6 @@ int balloon_page_migrate(struct address_space *mapping,
 		enum migrate_mode mode)
 {
 	struct balloon_dev_info *balloon = balloon_page_device(page);
-	printk(KERN_INFO "MY DEBUG. node:%d, dev_info:%x\n",page_to_nid(page),balloon);
 	/*
 	 * We can not easily support the no copy case here so ignore it as it
 	 * is unlikely to be used with balloon pages. See include/linux/hmm.h

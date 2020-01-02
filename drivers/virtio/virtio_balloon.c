@@ -188,7 +188,7 @@ struct page *balloon_page_alloc_node(int node)
 {
 	struct page *page = alloc_pages_node(node, balloon_mapping_gfp_mask() |
 				       __GFP_NOMEMALLOC | __GFP_NORETRY |
-				       __GFP_NOWARN, 0);
+				       __GFP_NOWARN | __GFP_THISNODE, 0);
 	return page;
 }
 static unsigned fill_balloon(struct virtio_balloon *vb, size_t num, int node)
@@ -207,6 +207,7 @@ static unsigned fill_balloon(struct virtio_balloon *vb, size_t num, int node)
 		if(node != page_to_nid(page)){
 			int new_node = page_to_nid(page);
 			printk(KERN_INFO "Expected node%d, but alloc'ed node%d.\n", node, new_node);
+			msleep(200);
 			break;
 			//node = new_node;
 		}
